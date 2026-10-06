@@ -219,9 +219,12 @@ own data, if needed.
 | `EM_in_H4C_model_realisation.jl` | Realisation model: evaluates fixed first-stage decisions against realised data |
 | `H4C_preprocessing.jl` | Reads the network and builds the initial state |
 | `*_prep.jl` | Readers for the individual component types |
-| `process_data/` | Network description (JSON) |
-| `time_series_data/` | Time series (CSV) |
-| `Results/` | Output |
+| `Project.toml`, `Manifest.toml` | Julia environment: the required packages and their exact versions |
+| `process_data/` | Network description (JSON), with a README per component type |
+| `time_series_data/` | Time series (CSV), with a README on the file format |
+| `Results/` | Output, with a README on the result files |
+| `README.md` | This file |
+| `LICENSE` | Licence text (MIT) |
 
 ## Licence
 
