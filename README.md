@@ -17,18 +17,6 @@ The model is originally made for hubs for circularity, where energy is
 scheduled alongisde industrial symbiosis, that can both be energy- and
 more material-based. It is developed as part of the IS2H4C project.
 
-## Citation
-
-If you use this model in your research, please cite:
-
-> **[TODO: authors, title, journal, year, DOI]**
-
-```bibtex
-[TODO: BibTeX entry]
-```
-
-The mathematical formulation of the model is described in this publication.
-
 ## Features
 
 The network can contain the following components:
@@ -237,7 +225,14 @@ own data, if needed.
 
 ## Licence
 
-**[TODO: licence, e.g. MIT]**
+This model is released under the [MIT License](LICENSE).
+
+Copyright (c) 2026 Tobias Løvebakke Nielsen, University of Twente.
+
+You are free to use, modify and distribute the model, also for commercial
+purposes, provided that the copyright notice and the licence text are included
+in all copies or substantial portions of it. The model is provided "as is",
+without warranty of any kind.
 
 ## Contact
 
