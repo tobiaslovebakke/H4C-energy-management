@@ -172,7 +172,8 @@ z_cg_ini = zeros(U_CG)
 z_transport_ini = zeros(U_trans,R, tau_max)
 
 # Upward and downward demand shifts of the previous horizon [demand, time step].
-# The models read these as globals (not from ini_vec); zero means no earlier shifts.
+# Not used by the current models: shifts are balanced within periods of
+# flex_interval time steps and are not carried over between horizons.
 v_up_ini   = zeros(D_transfer,T)
 v_down_ini = zeros(D_transfer,T)
 

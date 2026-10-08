@@ -93,8 +93,13 @@ stoc_res = h4c_stochastic(
     nodes      = nodes,
     time_limit = time_limit)
 
-# Remove the node files Gurobi may have written during the solve
-rm(joinpath(@__DIR__, "Nodefiles", "stochastic_$(simulation_name)"); recursive=true, force=true)
+# Remove the node files Gurobi may have written during the solve. On Windows the folder
+# can still be locked by Gurobi; it is then left in place (it is not needed afterwards).
+try
+    rm(joinpath(@__DIR__, "Nodefiles", "stochastic_$(simulation_name)"); recursive=true, force=true)
+catch
+    @warn "Could not remove the node-file folder Nodefiles/stochastic_$(simulation_name); it can be deleted manually."
+end
 
 
 # =============================================================================

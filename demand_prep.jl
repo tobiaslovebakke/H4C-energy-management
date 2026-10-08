@@ -119,8 +119,9 @@ function parse_demand(json_dict::Dict{String, Any}, S, T_considered)
     price = price_data
 
     # Flexibility. A transferable demand can be shifted in time: in each time step at
-    # most flex_factor * demand can be shifted up or down, and within every window of
-    # flex_interval time steps the upward and downward shifts must cancel out.
+    # most flex_factor * demand can be shifted up or down, and within every period of
+    # flex_interval time steps the upward and downward shifts must cancel out (the
+    # horizon is divided into consecutive periods, see the optimisation models).
     flex_type = get(json_dict, "flexibility", "non_flexible")
     flexibility = Dict(
         "type" => "non_flexible"

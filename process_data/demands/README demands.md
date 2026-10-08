@@ -55,7 +55,7 @@ These fields can be added when needed; otherwise the default is used.
 | `fulfill_exactly` | `true` / `false` | `true` | `true`: the delivery must equal the demand; `false`: more may be delivered (see below) |
 | `flexibility` | text | `"non_flexible"` | `"non_flexible"` or `"transferable"` |
 | `flex_factor` | number or CSV file | `0` | Transferable demands only: maximum shift per time step, as a fraction of the demand |
-| `flex_interval` | whole number | `6` | Transferable demands only: number of time steps within which shifts must cancel out |
+| `flex_interval` | whole number | `6` | Transferable demands only: length of the periods (in time steps) within which shifts must cancel out |
 
 Electricity sold to the grid at node 11 at a scenario-dependent price. The demand
 is 0, so nothing has to be delivered, but anything that is delivered earns the
@@ -109,11 +109,19 @@ shifted in time:
 - In every time step, the demand can be increased or decreased by at most
   `flex_factor` × demand. With `flex_factor = 0.2` and a demand of 10, between 8
   and 12 can be delivered.
-- Within every window of `flex_interval` consecutive time steps, the increases and
-  decreases must cancel out, so the total amount delivered over such a window
-  equals the total demand. Demand is thus moved in time, not reduced.
-- Shifts in the previous horizon are taken into account for the windows at the
-  start of the horizon.
+- The optimisation horizon is divided into consecutive periods of `flex_interval`
+  time steps (time steps 1 to `flex_interval`, the next `flex_interval` time steps,
+  and so on). Within every period, the increases and decreases must cancel out, so
+  the total amount delivered over the period equals the total demand. Demand is
+  thus moved in time within a period, not reduced.
+- If `flex_interval` is longer than the optimisation horizon, the whole horizon is
+  one period. If the horizon is not a multiple of `flex_interval`, the last period
+  is shorter.
+- Demand cannot be moved from one period to another. Choose `flex_interval` so that
+  the periods have a meaning in your case, e.g. `24` with hourly time steps for a
+  daily balance. In a rolling-horizon simulation, choose the number of
+  here-and-now time steps as a multiple of `flex_interval`, so that the periods
+  line up from one iteration to the next.
 
 `flex_factor` can also be a CSV file, to allow different flexibility per time
 step or scenario.

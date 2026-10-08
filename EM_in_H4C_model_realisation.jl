@@ -296,8 +296,18 @@ function h4c_realisation(
     @constraint(h4c_real, demand_transfer_up[d=1:D_transfer, t=1:T, w=1:W],   v_up[d,t,w]   <= demands_transferable[d].flexibility["flex_factor"][t,w] * demands_transferable[d].demand[t,w])
     @constraint(h4c_real, demand_transfer_down[d=1:D_transfer, t=1:T, w=1:W], v_down[d,t,w] <= demands_transferable[d].flexibility["flex_factor"][t,w] * demands_transferable[d].demand[t,w])
 
-    @constraint(h4c_real, demand_transfer_sum[d=1:D_transfer, t=1:T, w=1:W],  sum(v_up[d,t1,w]   for t1 in t-demands_transferable[d].flexibility["flex_interval"]+1:t if t1>=1) + sum(v_up_ini[d,end+t1]   for t1 in t-demands_transferable[d].flexibility["flex_interval"]+1:t if t1<=0) 
-                                                                    == sum(v_down[d,t1,w] for t1 in t-demands_transferable[d].flexibility["flex_interval"]+1:t if t1>=1) + sum(v_down_ini[d,end+t1] for t1 in t-demands_transferable[d].flexibility["flex_interval"]+1:t if t1<=0))
+    # Shifted demand is only moved in time, not curtailed: within every period of
+    # flex_interval time steps (see the stochastic model) the shifts must cancel out
+    flex_periods = Tuple{Int,Int,Int}[]                                  # (demand, first step, last step)
+    for d in 1:D_transfer
+        I_flex = min(Int(demands_transferable[d].flexibility["flex_interval"]), T)   # at most the horizon
+        for t_start in 1:I_flex:T
+            push!(flex_periods, (d, t_start, min(t_start + I_flex - 1, T)))          # last period may be shorter
+        end
+    end
+    @constraint(h4c_real, demand_transfer_sum[p=1:length(flex_periods), w=1:W],
+        sum(v_up[flex_periods[p][1],t,w]   for t in flex_periods[p][2]:flex_periods[p][3]) ==
+        sum(v_down[flex_periods[p][1],t,w] for t in flex_periods[p][2]:flex_periods[p][3]))
 
 
                                                                                                                                                                         

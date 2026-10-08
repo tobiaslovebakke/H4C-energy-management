@@ -143,10 +143,9 @@ idxs_first_stage = Dict(
 #
 # 6. Carry the realised state over to the next iteration:
 #        ini_vec = Dict(k => v for (k, v) in real_res if k ∉ (:status, :objective, :solve_time, :mip_gap))
-#    The demand shifts of the previous horizon are read from the globals
-#    v_up_ini and v_down_ini, so update these as well:
-#        v_up_ini   = real_res[:v_up]
-#        v_down_ini = real_res[:v_down]
+#    Demand shifts of transferable demands are balanced within periods of
+#    flex_interval time steps and are not carried over; choose T_hn as a multiple of
+#    flex_interval so that these periods line up from one iteration to the next.
 #
 # 7. Store the results of this iteration, e.g. append real_res to a results
 #    collection and write it to Results/ (see EM_in_H4C_model_main.jl for an

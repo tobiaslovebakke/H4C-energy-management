@@ -22,8 +22,6 @@
 #   L                Number of lags minus one (length(lags) == L+1)
 #   M_demand         Big-M constant used to relax the upper bound on demand
 #   extreme_cgs      Extreme-point matrices of the CG units (used to size G)
-#   v_up_ini         Upward demand shifts of the previous horizon   [d, t]
-#   v_down_ini       Downward demand shifts of the previous horizon [d, t]
 #   simulation_name  Name of the run; used for the Gurobi node-file directory
 # =============================================================================
 
@@ -502,11 +500,21 @@ function h4c_stochastic(
     @constraint(H4C, demand_transfer_up[d=1:D_transfer, t=1:T, w=1:W],   v_up[d,t,w]   <= demands_transferable[d].flexibility["flex_factor"][t,w] * demands_transferable[d].demand[t,w])
     @constraint(H4C, demand_transfer_down[d=1:D_transfer, t=1:T, w=1:W], v_down[d,t,w] <= demands_transferable[d].flexibility["flex_factor"][t,w] * demands_transferable[d].demand[t,w])
 
-    # Shifted demand is only moved in time, not curtailed: within every window of
-    # flex_interval time steps the upward and downward shifts must cancel out. Windows
-    # that start before t = 1 use the shifts of the previous horizon (v_up_ini, v_down_ini).
-    @constraint(H4C, demand_transfer_sum[d=1:D_transfer, t=1:T, w=1:W],  sum(v_up[d,t1,w]   for t1 in t-demands_transferable[d].flexibility["flex_interval"]+1:t if t1>=1) + sum(v_up_ini[d,end+t1]   for t1 in t-demands_transferable[d].flexibility["flex_interval"]+1:t if t1<=0) 
-                                                                    == sum(v_down[d,t1,w] for t1 in t-demands_transferable[d].flexibility["flex_interval"]+1:t if t1>=1) + sum(v_down_ini[d,end+t1] for t1 in t-demands_transferable[d].flexibility["flex_interval"]+1:t if t1<=0))
+    # Shifted demand is only moved in time, not curtailed. The optimisation horizon is
+    # divided into consecutive periods of flex_interval time steps, and within every
+    # period the upward and downward shifts must cancel out. If flex_interval is longer
+    # than the horizon, the whole horizon is one period; if the horizon is not a
+    # multiple of flex_interval, the last period is shorter.
+    flex_periods = Tuple{Int,Int,Int}[]                                  # (demand, first step, last step)
+    for d in 1:D_transfer
+        I_flex = min(Int(demands_transferable[d].flexibility["flex_interval"]), T)   # at most the horizon
+        for t_start in 1:I_flex:T
+            push!(flex_periods, (d, t_start, min(t_start + I_flex - 1, T)))          # last period may be shorter
+        end
+    end
+    @constraint(H4C, demand_transfer_sum[p=1:length(flex_periods), w=1:W],
+        sum(v_up[flex_periods[p][1],t,w]   for t in flex_periods[p][2]:flex_periods[p][3]) ==
+        sum(v_down[flex_periods[p][1],t,w] for t in flex_periods[p][2]:flex_periods[p][3]))
 
 
                                                                                                                                                                         
