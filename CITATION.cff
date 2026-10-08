@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: "If you use this model, please cite it as below."
+type: software
+title: "H4C energy management model"
+abstract: >-
+  A two-stage stochastic optimisation model for the operational energy
+  management scheduling of hubs for circularity (H4C), which can also be
+  applied to multi-carrier energy and material networks. Written in Julia
+  with JuMP. Developed as part of the IS2H4C project.
+authors:
+  - given-names: "Tobias Løvebakke"
+    family-names: "Nielsen"
+    affiliation: "University of Twente"
+    email: "t.l.nielsen@utwente.nl"
+    orcid: "https://orcid.org/0009-0006-3213-6545"
+  - given-names: "Daniela"
+    family-names: "Guericke"
+    affiliation: "University of Twente"
+    orcid: "https://orcid.org/0000-0002-0668-9094"
+  - given-names: "Alessio"
+    family-names: "Trivella"
+    affiliation: "University of Twente"
+    orcid: "https://orcid.org/0000-0002-2614-5051"
+  - given-names: "Devrim Murat"
+    family-names: "Yazan"
+    affiliation: "University of Twente"
+    orcid: "https://orcid.org/0000-0002-4341-2529"
+# Concept DOI: always resolves to the latest version on Zenodo
+doi: "10.5281/zenodo.23181826"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23181826"
+    description: "Concept DOI (all versions)"
+repository-code: "https://github.com/tobiaslovebakke/H4C-energy-management"
+license: MIT
+keywords:
+  - stochastic optimisation
+  - energy management
+  - multi-carrier energy systems
+  - hubs for circularity
+  - industrial symbiosis
+  - mixed-integer linear programming
+  - Julia
+  - JuMP
+# version and date-released can be added for a specific release, e.g.:
+# version: "0.2.0"
+# date-released: "2026-10-08"
